@@ -7,39 +7,37 @@ import styles from "./CreateUser.module.css";
 import ErrorModal from "../UI/ErrorModal";
 
 const CreateUser = (props) => {
-  const [inputName, setInputName] = useState("");
-  const [inputAge, setInputAge] = useState("");
+
+  const nameInputRef = useRef();
+  const ageInputRef = useRef();
+  console.log('name ref: ', nameInputRef);
+  console.log('age ref: ', ageInputRef);
   const [error, setError] = useState();
 
   const createUserHandler = (event) => {
     event.preventDefault();
-    if (inputName.trim().length === 0 || inputAge.trim().length === 0) {
+    const inputUserName = nameInputRef.current.value;
+    const inputUserAge = ageInputRef.current.value;
+    
+  
+    if (inputUserName.trim().length === 0 || inputUserAge.trim().length === 0) {
       setError({
         title: "Некорректный ввод",
         message: "Эти поля не могут быть пустыми",
       });
       return;
     }
-    if (+inputAge < 1) {
+    if (+inputUserAge < 1) {
       setError({
         title: "Некорректный возраст",
         message: "Возраст должен быть больше 0",
       });
       return;
     }
-    // console.log(inputName, inputAge);
-    props.onCreateUser(inputName, inputAge);
-    setInputName("");
-    setInputAge("");
+    props.onCreateUser(inputUserName, inputUserAge);
+    
   };
 
-  const nameChangeHandler = (event) => {
-    setInputName(event.target.value);
-  };
-
-  const ageChangeHandler = (event) => {
-    setInputAge(event.target.value);
-  };
 
   const errorHandler = () => {
     setError(false);
@@ -60,15 +58,13 @@ const CreateUser = (props) => {
           <input
             id="name"
             type="text"
-            onChange={nameChangeHandler}
-            value={inputName}
+            ref={nameInputRef}
           />
           <label htmlFor="age">Возраст</label>
           <input
             id="age"
             type="number"
-            onChange={ageChangeHandler}
-            value={inputAge}
+            ref={ageInputRef}
           />
           <Button type="submit">Добавить Пользователя</Button>
         </form>
